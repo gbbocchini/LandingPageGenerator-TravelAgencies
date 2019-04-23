@@ -5,6 +5,8 @@ from django.views.generic.edit import FormMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, TemplateView
+from django.core.mail import send_mail
+
 
 # List view no index (caso user saia da landing page)
 class PacoteList(ListView):
@@ -33,6 +35,15 @@ class PacoteView(DetailView, FormMixin):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
+            lista_itens = ['hotel_pref', 'quarto_pref', 'nome_do_interessado', 'quer_viajar_em_outra_data',
+                           'email_contato', 'telefone_contato']
+            lista = []
+            for i in lista_itens:
+                lista.append(form.cleaned_data.get(i))
+            subject = "Solicitação da Landing Page: "+request.POST.get('site_e_termos')
+            message = str(lista)
+            from_email = 'landing@pacotes.frontur.com.br'
+            send_mail(subject, message, from_email, ['marketing@frontur.com.br'])
             form.save(commit=True)
             return HttpResponseRedirect('/sucesso/')
         else:
@@ -41,7 +52,6 @@ class PacoteView(DetailView, FormMixin):
     def form_valid(self, form):
           if form.is_valid:
               form.save(commit=True)
-            # TODO FORM POR EMAIL
           return super().form_valid(form)
 
     def get_success_url(self):

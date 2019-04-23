@@ -22,7 +22,7 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')),
+    # path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('', views.PacoteList.as_view(), name='index'),
     path('sucesso/', views.Sucesso.as_view(), name='sucesso'),
